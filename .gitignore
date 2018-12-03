@@ -1,0 +1,11 @@
+# IntelliJ
+.idea
+*.iml
+*.ipr
+
+# Gradle
+.gradle
+!gradle-wrapper.jar
+
+# Java
+*.jar
