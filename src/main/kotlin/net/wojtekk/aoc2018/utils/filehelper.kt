@@ -7,5 +7,6 @@ object FileHelper {
         return File(ClassLoader.getSystemResource(filename).file)
             .readLines()
             .map(String::trim)
+            .filter(String::isNotEmpty)
     }
 }
