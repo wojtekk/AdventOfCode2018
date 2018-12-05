@@ -6,6 +6,6 @@ fun main() {
     val path = "day01/input.txt";
     val res = readLines(path)
         .map { Integer.valueOf(it, 10) }
-        .fold(0) { acc, i -> acc + i }
+        .sum()
     System.out.println("Answer: $res")
 }
