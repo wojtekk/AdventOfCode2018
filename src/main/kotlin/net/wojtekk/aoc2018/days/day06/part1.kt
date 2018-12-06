@@ -13,48 +13,32 @@ fun main() {
     val points = readLines(path)
         .flatMap { it.split(",").map(String::trim).map(String::toInt).zipWithNext { a, b -> Point(a, b) } }
 
-    val maxX = points.map { it.x }.max()!!
-    val maxY = points.map { it.y }.max()!!
+    val maxX = points.map { it.x }.max()!! - 1
+    val maxY = points.map { it.y }.max()!! - 1
 
-    val surface = Array(maxX) { Array<BasePoint>(maxY) { EmptyPoint } }
+    val surface = Array(maxX + 1) { Array<BasePoint>(maxY + 1) { EmptyPoint } }
+    val infinity = mutableSetOf<BasePoint>()
 
-    (0 until maxX).forEach { x ->
-        (0 until maxY).forEach { y ->
-            val owners =
-                points.map { it to distance(Point(x, y), it) }
-                    .sortedBy { it.second }
-                    .take(2)
-                    .zipWithNext()
-                    .first()
-            surface[x][y] = if (owners.first.second == owners.second.second) {
+    (0..maxX).forEach { x ->
+        (0..maxY).forEach { y ->
+            val owners = points.map { it to distance(Point(x, y), it) }
+                .sortedBy { it.second }
+                .take(2)
+            surface[x][y] = if (owners[0].second == owners[1].second) {
                 CommonPoint
             } else {
-                owners.first.first
+                if (x == 0 || x == maxX || y == 0 || y == maxY) infinity.add(owners[0].first)
+                owners[0].first
             }
         }
     }
 
-    val infinity = mutableSetOf<BasePoint>()
-    (0 until maxX).forEach { x ->
-        infinity.add(surface[x][0])
-        infinity.add(surface[x][maxY - 1])
-    }
-    (0 until maxY).forEach { y ->
-        infinity.add(surface[0][y])
-        infinity.add(surface[maxX - 1][y])
-    }
-
-    val area = mutableMapOf<Point, Int>()
-    surface.forEach { r ->
-        r.forEach { c ->
-            if (c !in infinity && c is Point) {
-                area.putIfAbsent(c, 0)
-                area.computeIfPresent(c) { _, v -> v + 1 }
-            }
-        }
-    }
-
-    val res = area.asSequence().map { it.value }.max()
+    val res = surface.flatMap { it.asIterable() }
+        .filterNot { it in infinity }
+        .filterIsInstance<Point>()
+        .groupingBy { it }.eachCount()
+        .map { it.value }
+        .max()
 
     System.out.println("Answer: $res")
 }

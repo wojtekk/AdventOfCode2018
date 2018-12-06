@@ -8,21 +8,15 @@ fun main() {
     val points = readLines(path)
         .flatMap { it.split(",").map(String::trim).map(String::toInt).zipWithNext { a, b -> Point(a, b) } }
 
-    val maxX = points.map { it.x }.max()!!
-    val maxY = points.map { it.y }.max()!!
+    val maxX = points.map { it.x }.max()!! - 1
+    val maxY = points.map { it.y }.max()!! - 1
 
-    val surface = Array(maxX) { Array<BasePoint>(maxY) { EmptyPoint } }
-
-    (0 until maxX).forEach { x ->
-        (0 until maxY).forEach { y ->
-            val totalDistance = points.sumBy { distance(Point(x, y), it) }
-            if (totalDistance < maxDistance) {
-                surface[x][y] = GreatPoint
-            }
+    var res = 0
+    (0..maxX).forEach { x ->
+        (0..maxY).forEach { y ->
+            if (points.sumBy { distance(Point(x, y), it) } < maxDistance) res++
         }
     }
-
-    val res = surface.map { it.filterIsInstance<GreatPoint>().count() }.sum()
 
     System.out.println("Answer: $res")
 }
