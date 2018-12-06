@@ -5,7 +5,6 @@ import net.wojtekk.aoc2018.utils.FileHelper.readLines
 sealed class BasePoint
 object EmptyPoint : BasePoint()
 object CommonPoint : BasePoint()
-object GreatPoint : BasePoint() // for Part2
 data class Point(val x: Int, val y: Int) : BasePoint()
 
 fun main() {
