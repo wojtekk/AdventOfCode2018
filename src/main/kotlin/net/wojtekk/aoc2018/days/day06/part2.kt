@@ -15,7 +15,7 @@ fun main() {
 
     (0 until maxX).forEach { x ->
         (0 until maxY).forEach { y ->
-            val totalDistance = points.map { it to distance(Point(x, y), it) }.sumBy { it.second }
+            val totalDistance = points.sumBy { distance(Point(x, y), it) }
             if (totalDistance < maxDistance) {
                 surface[x][y] = GreatPoint
             }
