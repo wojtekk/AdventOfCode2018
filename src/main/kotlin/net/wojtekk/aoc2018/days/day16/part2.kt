@@ -34,7 +34,7 @@ object Day16p2 {
                 .map { it.split(Regex("[ ]+")).map(String::toInt) }
                 .map { InstructionFactory.create(opcodeToInstruction[it[0]]!!, it) }
 
-        var res = Registry(0, 0, 0, 0)
+        var res = Registers(0, 0, 0, 0)
         program.forEach { res = it.execute(res) }
 
         System.out.println("Answer: $res")
@@ -55,9 +55,9 @@ object Day16p2 {
     }
 
     private fun validate(list: List<List<Int>>): Sequence<Pair<String, Int>> {
-        val before = Registry(list[0][0], list[0][1], list[0][2], list[0][3])
+        val before = Registers(list[0][0], list[0][1], list[0][2], list[0][3])
         val data = list[1]
-        val after = Registry(list[2][0], list[2][1], list[2][2], list[2][3])
+        val after = Registers(list[2][0], list[2][1], list[2][2], list[2][3])
 
         return InstructionFactory.getAll()
                 .map { InstructionFactory.create(it, data) }
