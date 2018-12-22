@@ -1,10 +1,9 @@
 package net.wojtekk.aoc2018.days.day19
 
 import net.wojtekk.aoc2018.utils.FileHelper.readLines
-import java.lang.IllegalArgumentException
 
 
-data class Registry(var a: Int, var b: Int, var c: Int, var d: Int, var e: Int, var f: Int) {
+data class Registers(var a: Int, var b: Int, var c: Int, var d: Int, var e: Int, var f: Int) {
     fun get(n: Int): Int = when (n) {
         0 -> a
         1 -> b
@@ -28,14 +27,14 @@ data class Registry(var a: Int, var b: Int, var c: Int, var d: Int, var e: Int, 
 
 interface InstructionExecutor {
     val name: String
-    fun execute(registry: Registry): Registry
+    fun execute(registers: Registers): Registers
 }
 
 abstract class AbstractInstruction(val regA: Int, val regB: Int, val regC: Int) : InstructionExecutor {
     protected abstract fun apply(a: Int, b: Int): Int
 
-    fun result(registry: Registry, value: Int): Registry {
-        val res = registry.copy()
+    fun result(registers: Registers, value: Int): Registers {
+        val res = registers.copy()
         res.set(regC, value)
         return res
     }
@@ -46,23 +45,23 @@ abstract class AbstractInstruction(val regA: Int, val regB: Int, val regC: Int) 
 }
 
 abstract class AbstractInstructionRR(regA: Int, regB: Int, regC: Int) : AbstractInstruction(regA, regB, regC) {
-    override fun execute(registry: Registry): Registry {
-        val res = apply(registry.get(regA), registry.get(regB))
-        return result(registry, res)
+    override fun execute(registers: Registers): Registers {
+        val res = apply(registers.get(regA), registers.get(regB))
+        return result(registers, res)
     }
 }
 
 abstract class AbstractInstructionRI(regA: Int, regB: Int, regC: Int) : AbstractInstruction(regA, regB, regC) {
-    override fun execute(registry: Registry): Registry {
-        val res = apply(registry.get(regA), regB)
-        return result(registry, res)
+    override fun execute(registers: Registers): Registers {
+        val res = apply(registers.get(regA), regB)
+        return result(registers, res)
     }
 }
 
 abstract class AbstractInstructionIR(regA: Int, regB: Int, regC: Int) : AbstractInstruction(regA, regB, regC) {
-    override fun execute(registry: Registry): Registry {
-        val res = apply(regA, registry.get(regB))
-        return result(registry, res)
+    override fun execute(registers: Registers): Registers {
+        val res = apply(regA, registers.get(regB))
+        return result(registers, res)
     }
 }
 
@@ -184,16 +183,16 @@ object Day19p1 {
                 .map { it.split(Regex("[ ]+")) }
                 .map { InstructionFactory.create(it[0], it.drop(1).map(String::toInt)) }
 
-        var registry = Registry(0, 0, 0, 0, 0, 0)
+        var registers = Registers(0, 0, 0, 0, 0, 0)
 
         var p = 0
         do {
-            registry = program[p].execute(registry)
-            registry.set(ip, registry.get(ip) + 1)
-            p = registry.get(ip)
+            registers = program[p].execute(registers)
+            registers.set(ip, registers.get(ip) + 1)
+            p = registers.get(ip)
         } while (p < program.size)
 
-        System.out.println("Answer: $registry")
+        System.out.println("Answer: ${registers.a}")
     }
 }
 
