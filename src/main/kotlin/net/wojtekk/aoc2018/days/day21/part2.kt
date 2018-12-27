@@ -8,7 +8,7 @@ import net.wojtekk.aoc2018.utils.FileHelper.readLines
 object Day21p2 {
     fun main() {
         val path = "day21/input.txt"
-        var input = readLines(path)
+        val input = readLines(path)
 
         val ip = input
                 .take(1)

@@ -21,7 +21,7 @@ object Day23p2 {
 
         // Inspired discussion on Reddit:
         // https://www.reddit.com/r/adventofcode/comments/a8s17l/2018_day_23_solutions/ecddus1/
-        // about zoom in/out strategy. The solution ^ has 2 bugs, imho, but is really smart.
+        // about zoom in/out strategy.
 
         // zoom out
         var step = 1

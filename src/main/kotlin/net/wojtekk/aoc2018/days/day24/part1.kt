@@ -48,13 +48,14 @@ data class Group(val type: GroupType,
 
 class Battle {
     fun main(groups: MutableList<Group>): List<Group> {
+        val groupsSizeHistory = mutableMapOf(groups.size to 0)
         do {
             val immuneGroup = groups.filter { it.type == GroupType.IMMUNE }.toMutableList()
             val infectionGroup = groups.filter { it.type == GroupType.INFECTION }.toMutableList()
             val battles = groups.sorted()
                     .map { g ->
                         val enemies = if (g.type == GroupType.INFECTION) immuneGroup else infectionGroup
-                        val e = enemies
+                        val enemy = enemies
                                 .map { Pair(it, attackImpact(g, it)) }
                                 .filter { it.second > 0 }
                                 .sortedWith(Comparator { p1, p2 ->
@@ -66,7 +67,6 @@ class Battle {
                                     } else
                                         -1 * p1.second.compareTo(p2.second)
                                 })
-                        val enemy = e
                                 .firstOrNull()
                                 .let { it?.first }
                         if (enemy != null) {
@@ -86,7 +86,9 @@ class Battle {
                         enemy.units -= killing
                         if (enemy.units <= 0) groups.remove(enemy)
                     }
-        } while (groups.groupingBy { it.type }.eachCount().keys.size > 1)
+            groupsSizeHistory.putIfAbsent(groups.size, 0)
+            groupsSizeHistory.computeIfPresent(groups.size) { _, it -> it + 1 }
+        } while (groups.groupingBy { it.type }.eachCount().keys.size > 1 && groupsSizeHistory[groups.size]!! < 100000)
 
         return groups
     }
